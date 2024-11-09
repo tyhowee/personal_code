@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Load the NetCDF file
-file_path = r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ICB_data\testing\all_RS_layers.nc"  # Replace with your NetCDF file path
+file_path = '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/testing/uncorrelated_layers_1.nc' # Replace with your NetCDF file path
 ds = xr.open_dataset(file_path)
 
 # Extract the combined_layers array and get layer names
