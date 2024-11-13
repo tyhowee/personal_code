@@ -4,6 +4,18 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 
+CONFIG = {
+    "file_path": '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/testing/all_RS_layers.nc',
+    "samples": 500,
+    "target_count": 10,
+    "max_attempts": 1000,
+    "nan_threshold": 0.995,
+    "zero_threshold": 0.995,
+    "max_threshold": 1.0,
+    "min_threshold": 0.0,
+    "threshold_step": -0.02,
+}
+
 def load_data(file_path: str, nan_threshold: float = 0.9, zero_threshold: float = 0.9) -> pd.DataFrame:
     ds = xr.open_dataset(file_path)
     combined_layers = ds["combined_layers"]
@@ -45,30 +57,26 @@ def select_random_lowly_correlated_layers(correlation_matrix: pd.DataFrame, thre
             best_selection = selected_layers
     return best_selection
 
+def plot_results(results_df: pd.DataFrame):
+    plt.figure(figsize=(10, 6))
+    plt.plot(results_df['Threshold'], results_df['Selected_Layers'], marker='o')
+    plt.xlabel('Correlation Threshold')
+    plt.xticks(np.arange(CONFIG["min_threshold"], CONFIG["max_threshold"] + (-CONFIG["threshold_step"]), -CONFIG["threshold_step"]), rotation=45)
+    plt.ylabel('Number of Selected Layers')
+    plt.title('Number of Layers Selected vs Correlation Threshold')
+    plt.grid()
+    plt.gca().invert_xaxis()
+    plt.show()
+
 def main():
-    #file_path = r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ICB_data\testing\all_RS_layers.nc"
-    file_path = '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/testing/all_RS_layers.nc'
-
-    samples = 500
-    target_count = 10
-    max_attempts = 1000
-
-    df, layer_names = load_data(
-        file_path, 
-        nan_threshold=0.995, 
-        zero_threshold=0.995
-    )
-    
-    correlation_matrix = calculate_correlation(df, samples)
-    
-    max_threshold = 1.0
-    min_threshold = 0.0
-    threshold_step = -0.02
+    # Load data and compute correlation matrix
+    df, layer_names = load_data(CONFIG["file_path"], CONFIG["nan_threshold"], CONFIG["zero_threshold"])
+    correlation_matrix = calculate_correlation(df, CONFIG["samples"])
 
     # Iteratively reduce threshold and collect results
     results = []
-    for threshold in np.arange(max_threshold, min_threshold, threshold_step):
-        selected_layers = select_random_lowly_correlated_layers(correlation_matrix, threshold, target_count, max_attempts)
+    for threshold in np.arange(CONFIG["max_threshold"], CONFIG["min_threshold"], CONFIG["threshold_step"]):
+        selected_layers = select_random_lowly_correlated_layers(correlation_matrix, threshold, CONFIG["target_count"], CONFIG["max_attempts"])
         results.append({'Threshold': threshold, 'Selected_Layers': len(selected_layers)})
         print(f"Threshold {threshold:.2f}: Selected {len(selected_layers)} layers")
 
@@ -78,15 +86,7 @@ def main():
     print(results_df)
 
     # Plotting the results
-    plt.figure(figsize=(10, 6))
-    plt.plot(results_df['Threshold'], results_df['Selected_Layers'], marker='o')
-    plt.xlabel('Correlation Threshold')
-    plt.xticks(np.arange(min_threshold, max_threshold + (-threshold_step), -threshold_step), rotation = 45)
-    plt.ylabel('Number of Selected Layers')
-    plt.title('Number of Layers Selected vs Correlation Threshold')
-    plt.grid()
-    plt.gca().invert_xaxis()
-    plt.show()
+    plot_results(results_df)
 
 if __name__ == "__main__":
     main()
