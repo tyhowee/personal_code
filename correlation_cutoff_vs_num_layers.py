@@ -46,7 +46,8 @@ def select_random_lowly_correlated_layers(correlation_matrix: pd.DataFrame, thre
     return best_selection
 
 def main():
-    file_path = r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ICB_data\testing\all_RS_layers.nc"
+    #file_path = r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ICB_data\testing\all_RS_layers.nc"
+    file_path = '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/testing/all_RS_layers.nc'
 
     samples = 500
     target_count = 10
@@ -60,9 +61,9 @@ def main():
     
     correlation_matrix = calculate_correlation(df, samples)
     
-    max_threshold = 0.99
-    min_threshold = 0.89
-    threshold_step = -0.01
+    max_threshold = 1.0
+    min_threshold = 0.0
+    threshold_step = -0.02
 
     # Iteratively reduce threshold and collect results
     results = []
@@ -80,7 +81,7 @@ def main():
     plt.figure(figsize=(10, 6))
     plt.plot(results_df['Threshold'], results_df['Selected_Layers'], marker='o')
     plt.xlabel('Correlation Threshold')
-    plt.xticks(np.arange(min_threshold, max_threshold + (-threshold_step), -threshold_step))
+    plt.xticks(np.arange(min_threshold, max_threshold + (-threshold_step), -threshold_step), rotation = 45)
     plt.ylabel('Number of Selected Layers')
     plt.title('Number of Layers Selected vs Correlation Threshold')
     plt.grid()
