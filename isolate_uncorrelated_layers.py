@@ -7,15 +7,15 @@ import shutil
 
 
 CONFIG = {
-    "file_path": r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ICB_data\testing\all_RS_layers.nc", #Path to nc file containing all layers of interest
+    "file_path": '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/testing/all_RS_layers.nc', #Path to nc file containing all layers of interest
     "samples": 500, #For corr(), impacts performance
     "nan_threshold": 0.995, #Max percentage of pixels in any layer that can be nan
     "zero_threshold": 0.995, #Max percentage of pixels in any layer that can be zero
     "correlation_threshold": 0.97,  # Maximum allowed correlation between any pair of selected layers
     "target_count": 10,  # Number of layers to select
     "max_attempts": 1000,  # Maximum number of attempts to try different random selections
-    "folder_path": r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ICB_data\geospatial_data\all_RS_layer", #Folder containing files for all layers present in nc file
-    "output_folder": r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ICB_data\geospatial_data\uncorrelated_RS" #Output folder to export lowly-correlated files
+    "folder_path": '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/geospatial_data/all_RS_layer', #Folder containing files for all layers present in nc file
+    "output_folder": '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/geospatial_data/uncorrelated_RS_3' #Output folder to export lowly-correlated files
 }
 
 def load_data(file_path: str, nan_threshold: float = 0.9, zero_threshold: float = 0.9) -> pd.DataFrame:
