@@ -29,11 +29,17 @@ def apply_turbo_colormap(input_folder, subfolder_name="RGBA_outputs"):
                 band = dataset.GetRasterBand(1)
                 array = band.ReadAsArray()
 
-                # Normalize the data to 0-1 range
-                normalized_array = (array - np.min(array)) / (np.max(array) - np.min(array))
+                # Decide whether to normalize based on filename
+                if "cv" in file.lower():
+                    # Normalize to [0, max(array)]
+                    max_value = np.max(array)
+                    data_to_process = array / max_value if max_value > 0 else array
+                else:
+                    # Normalize the data to 0-1 range
+                    data_to_process = (array - np.min(array)) / (np.max(array) - np.min(array))
 
                 # Apply the colormap
-                rgba_array = (colormap(normalized_array) * 255).astype(np.uint8)
+                rgba_array = (colormap(data_to_process) * 255).astype(np.uint8)
 
                 # Clamp values to 0–255 to ensure 8-bit validity
                 rgba_array = np.clip(rgba_array, 0, 255).astype(np.uint8)
@@ -62,7 +68,7 @@ def apply_turbo_colormap(input_folder, subfolder_name="RGBA_outputs"):
                 out_raster.FlushCache()
 
                 # Create colorbar
-                norm = Normalize(vmin=0, vmax=1)
+                norm = Normalize(vmin=0, vmax=1 if "cv" not in file.lower() else max_value)
                 sm = ScalarMappable(norm=norm, cmap=colormap)
 
                 fig, ax = plt.subplots(figsize=(8, 1))
@@ -85,5 +91,5 @@ def apply_turbo_colormap(input_folder, subfolder_name="RGBA_outputs"):
     print("Processing complete.")
 
 # Example usage
-input_folder = r"C:\Users\TyHow\MinersAI Dropbox\Product\Pilot Projects\Chile - Mantos Grandes\To put on the platform\supervised_ML_product_package"
-apply_turbo_colormap(input_folder)
+input_dir = r"C:\Users\TyHow\MinersAI Dropbox\Product\Pilot Projects\Chile - Mantos Grandes\To put on the platform\supervised_ML_product_package"
+apply_turbo_colormap(input_dir)
