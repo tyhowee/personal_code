@@ -59,19 +59,16 @@ if not output_file:
     print("No output file selected. Exiting.")
     exit()
 
-# Check if y-coordinates are in descending order and reverse if necessary
-if np.all(np.diff(ds.coords["y"].values) < 0):
-    print("Reversing y-axis to correct orientation.")
-    average_array = np.flipud(average_array)
-    min_array = np.flipud(min_array)
-    max_array = np.flipud(max_array)
-    std_dev_array = np.flipud(std_dev_array)
-    cv_array = np.flipud(cv_array)
-    thresholded_array = np.flipud(thresholded_array)
-    smoothed_array = np.flipud(smoothed_array)
-    y_coords = ds.coords["y"].values[::-1]  # Reverse y-coordinates
-else:
-    y_coords = ds.coords["y"].values[::-1] 
+#Reverse y-coords
+print("Reversing y-axis to correct orientation.")
+average_array = np.flipud(average_array)
+min_array = np.flipud(min_array)
+max_array = np.flipud(max_array)
+std_dev_array = np.flipud(std_dev_array)
+cv_array = np.flipud(cv_array)
+thresholded_array = np.flipud(thresholded_array)
+smoothed_array = np.flipud(smoothed_array)
+y_coords = ds.coords["y"].values[::-1]  # Reverse y-coordinates
 
 # Save results back to a new NetCDF file
 output_ds = xr.Dataset(
