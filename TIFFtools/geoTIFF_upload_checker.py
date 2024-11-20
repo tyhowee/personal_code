@@ -5,6 +5,7 @@ def check_and_fix_geotiff(input_folder, output_folder):
     """
     Check and fix GeoTIFF files to ensure they meet the specified standards.
     Standards: GeoTIFF (8-bit RGBA), EPSG:4326, lossless compression (COMPRESS=LZW).
+    Also, export a .txt file with the extent of each GeoTIFF in a JSON-compatible format.
     """
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -17,6 +18,7 @@ def check_and_fix_geotiff(input_folder, output_folder):
             base_name, ext = os.path.splitext(file_name)
             output_file_name = f"{base_name}_processed{ext}"
             output_path = os.path.join(output_folder, output_file_name)
+            extent_file_path = os.path.join(output_folder, f"{base_name}_extent.txt")
 
             # Open the input GeoTIFF file
             ds = gdal.Open(input_path)
@@ -56,6 +58,17 @@ def check_and_fix_geotiff(input_folder, output_folder):
             print(f"{file_name}: Saving as {output_file_name} with LZW compression...")
             gdal.Translate(output_path, ds, creationOptions=["COMPRESS=LZW"])
 
+            # Extract and write extent to a .txt file
+            geo_transform = ds.GetGeoTransform()
+            min_x = geo_transform[0]
+            max_y = geo_transform[3]
+            max_x = min_x + geo_transform[1] * ds.RasterXSize
+            min_y = max_y + geo_transform[5] * ds.RasterYSize
+            extent_json = [[min_x, min_y], [max_x, max_y]]
+            with open(extent_file_path, 'w') as extent_file:
+                extent_file.write(str(extent_json))
+            print(f"{file_name}: Extent written to {extent_file_path}")
+
             # Clean up in-memory datasets
             if reprojected_ds_path:
                 gdal.Unlink(reprojected_ds_path)
@@ -65,6 +78,6 @@ def check_and_fix_geotiff(input_folder, output_folder):
             ds = None  # Close the dataset to release resources
 
 if __name__ == "__main__":
-    input_folder = '/Users/thowe/MinersAI Dropbox/Product/Pilot Projects/Chile - Mantos Grandes/To put on the platform/supervised_ML_product_package/alteration_targets/RGBA_outputs'
+    input_folder = r"C:\Users\TyHow\MinersAI Dropbox\Product\Pilot Projects\Chile - Mantos Grandes\To put on the platform\supervised_ML_product_package\alteration_targets\RGBA_outputs"
     output_folder = input_folder
     check_and_fix_geotiff(input_folder, output_folder)
