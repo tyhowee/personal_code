@@ -22,7 +22,7 @@ def raster_difference(tiff_path1, tiff_path2, output_path):
     std_dev = np.std(difference)
     range_val = max_val - min_val
     
-    print(f"Difference Layer Statistics:")
+    print("Difference Layer Statistics:")
     print(f"Min: {min_val}")
     print(f"Max: {max_val}")
     print(f"Mean: {mean_val}")
@@ -36,10 +36,10 @@ def raster_difference(tiff_path1, tiff_path2, output_path):
     with rasterio.open(output_path, 'w', **profile) as dst:
         dst.write(difference.astype(rasterio.float32), 1)
 
-raster_1 = r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ML_Pilot_Tyler_Data\1200px_full\full\full_avg.tif"
-raster_2 = r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ML_Pilot_Tyler_Data\1200px_full\full_halved_targets\halved_targets_avg.tif"
+raster_1 = '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/Co_mines_cubes/set2/s2_avg.tiff'
+raster_2 = '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/Co_mines_cubes/set3/s3_avg.tiff'
 
-output_raster = r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ML_Pilot_Tyler_Data\1200px_full\output_difference.tif"
+output_raster = '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/Co_mines_cubes/s2_s3_diff.tiff'
 # Example usage
 raster_difference(
     raster_1, 
