@@ -3,7 +3,7 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 
 # Replace 'your_file.parquet' with the path to your Parquet file
-file_path = '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/geospatial_data/uncorrelated_RS_1/ICB_mag_processed.parquet'
+file_path = '/Users/thowe/MinersAI Dropbox/Tyler Howe/ICB_data/geospatial_data/rad:mag/ICB_rad_processed.parquet'
 
 print(f'\nInspecting file: {file_path}\n')
 
