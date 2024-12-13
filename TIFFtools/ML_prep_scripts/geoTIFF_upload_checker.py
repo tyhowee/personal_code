@@ -78,6 +78,6 @@ def check_and_fix_geotiff(input_folder, output_folder):
             ds = None  # Close the dataset to release resources
 
 if __name__ == "__main__":
-    input_folder = r"C:\Users\TyHow\MinersAI Dropbox\Product\Pilot Projects\Chile - Mantos Grandes\To put on the platform\supervised_ML_product_package\alteration_targets\RGBA_outputs"
+    input_folder = r"C:\Users\TyHow\MinersAI Dropbox\Tyler Howe\ICB_data\50km_faults\avg\product_package\RGBA_outputs"
     output_folder = input_folder
     check_and_fix_geotiff(input_folder, output_folder)
