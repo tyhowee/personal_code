@@ -74,6 +74,20 @@
         }
       });
 
+      // Function to get visible layers (excluding basemap)
+      function getVisibleLayers() {
+        const layers = map.getStyle().layers;
+        const visibleLayers = [];
+
+        layers.forEach((layer) => {
+          if (!layer.id.startsWith('background') && !layer.id.startsWith('water') && !layer.id.startsWith('land')) {
+            visibleLayers.push(layer.id);
+          }
+        });
+
+        return visibleLayers;
+      }
+
       // Button event listener to trigger the pipeline
       document.getElementById('processButton').addEventListener('click', () => {
         if (!drawnPolygon) {
@@ -81,30 +95,33 @@
           return;
         }
 
-        // Send the GeoJSON polygon to the backend
-        sendPolygonToPipeline(drawnPolygon);
+        // Get all visible layers
+        const visibleLayers = getVisibleLayers();
+
+        // Send the GeoJSON polygon and visible layers to the backend
+        sendPolygonToPipeline(drawnPolygon, visibleLayers);
       });
 
-      // Send the polygon to the data pipeline (local or API call)
-      function sendPolygonToPipeline(geojson) {
+      // Send the polygon and visible layers to the data pipeline (local or API call)
+      function sendPolygonToPipeline(geojson, visibleLayers) {
         fetch('http://localhost:5000/process', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ mask: geojson })
+          body: JSON.stringify({ mask: geojson, layers: visibleLayers })
         })
-          .then(response => {
+          .then((response) => {
             if (!response.ok) {
               throw new Error(`Server error: ${response.status}`);
             }
             return response.json();
           })
-          .then(data => {
+          .then((data) => {
             console.log('Pipeline response:', data);
             alert("Pipeline processed successfully. Check console for details.");
           })
-          .catch(error => {
+          .catch((error) => {
             console.error('Error sending to pipeline:', error);
             alert("An error occurred. Check the console for more details.");
           });
