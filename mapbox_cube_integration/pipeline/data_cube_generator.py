@@ -2,6 +2,7 @@ import numpy as np
 import xarray as xr
 import json
 import time
+import tempfile
 from pipeline.cube_generator_utils import (
     compute_grid_size,
     combine_layers,
@@ -12,6 +13,7 @@ from pipeline.cube_processing_function import CubeGeospatialProcessor
 
 def process_data_cube(
     geojson_mask,
+    bbox,
     geojson_files,
     line_geojson_files,
     target_files,
@@ -36,7 +38,7 @@ def process_data_cube(
     short_edge_cells = 100
 
     # Compute grid size using the mask
-    grid_size = compute_grid_size(geojson_mask, short_edge_cells=short_edge_cells)[::-1]
+    grid_size = compute_grid_size(bbox, short_edge_cells=short_edge_cells)[::-1]
     print(f"Calculated grid size: {grid_size}")
 
     # Initialize the processor

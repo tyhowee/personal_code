@@ -1,14 +1,12 @@
 import os
 import requests
-import tkinter as tk
-
 
 import geopandas as gpd
 import numpy as np
-import rasterio
-from rasterio.errors import RasterioIOError
-from typing import Tuple
-from shapely.geometry import box
+import tempfile
+import json
+
+from typing import Tuple, List
 
 
 MAPBOX_ACCESS_TOKEN = "pk.eyJ1IjoidHlob3dlIiwiYSI6ImNtNG9zb3VnYTBkbWMybG9mNnFwYjQwYTAifQ.6DdWyeUfTpiuW36elXkarw"
@@ -130,13 +128,19 @@ def select_parquet_columns(geoparquet_file, parquet_features_to_process):
 
 # Grid Size--------------------------------------------------
 # Function to compute grid size based on the mask file
-def compute_grid_size(geojson_file: str, short_edge_cells: int = 20) -> Tuple[int, int]:
-    # Read the GeoJSON file using GeoPandas
-    gdf = gpd.read_file(geojson_file)
-    
-    # Get the bounding box of the masking region
-    minx, miny, maxx, maxy = gdf.total_bounds
-    
+def compute_grid_size(bbox: list, short_edge_cells: int = 20) -> Tuple[int, int]:
+    """
+    Computes the grid size for a given bounding box.
+
+    Args:
+        bbox (list): Bounding box as [minx, miny, maxx, maxy].
+        short_edge_cells (int): Number of cells along the shorter edge of the grid.
+
+    Returns:
+        Tuple[int, int]: The computed grid size as (rows, columns).
+    """
+    minx, miny, maxx, maxy = bbox
+
     # Calculate width and height of the bounding box
     width = maxx - minx
     height = maxy - miny
@@ -145,11 +149,11 @@ def compute_grid_size(geojson_file: str, short_edge_cells: int = 20) -> Tuple[in
     if width < height:
         short_edge = width
         long_edge = height
-        orientation = 'portrait'
+        orientation = "portrait"
     else:
         short_edge = height
         long_edge = width
-        orientation = 'landscape'
+        orientation = "landscape"
 
     # Compute the aspect ratio
     aspect_ratio = long_edge / short_edge
@@ -158,7 +162,7 @@ def compute_grid_size(geojson_file: str, short_edge_cells: int = 20) -> Tuple[in
     long_edge_cells = int(short_edge_cells * aspect_ratio)
 
     # Determine the grid size based on the orientation
-    if orientation == 'portrait':
+    if orientation == "portrait":
         grid_size = (short_edge_cells, long_edge_cells)
     else:
         grid_size = (long_edge_cells, short_edge_cells)
