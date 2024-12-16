@@ -14,7 +14,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Mapbox Configuration
-MAPBOX_ACCESS_TOKEN = "sk.eyJ1IjoidHlob3dlIiwiYSI6ImNtNHE3a3VvbzEyOXgyaXB1eGgxcmZidmgifQ.3Cot-Gp7F3i5odGNVaL1aA"
+MAPBOX_ACCESS_TOKEN = os.getenv('MAPBOX_TOKEN')
 USERNAME = "tyhowe"  # Your Mapbox username
 
 
