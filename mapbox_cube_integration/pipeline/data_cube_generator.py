@@ -41,9 +41,16 @@ def process_data_cube(
     grid_size = compute_grid_size(bbox, short_edge_cells=short_edge_cells)[::-1]
     print(f"Calculated grid size: {grid_size}")
 
+    # Save the geojson_mask as a temporary file
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".geojson", delete=False
+    ) as temp_mask_file:
+        json.dump(geojson_mask, temp_mask_file)
+        temp_mask_file_path = temp_mask_file.name
+
     # Initialize the processor
     processor = CubeGeospatialProcessor(
-        grid_size=grid_size, mask_file=geojson_mask, crs="EPSG:3857"
+        grid_size=grid_size, mask_file=temp_mask_file_path, crs="EPSG:3857"
     )
 
     # Start timing for the entire file processing operation
